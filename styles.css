@@ -1,65 +1,70 @@
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
 }
 
-.container {
-    max-width: 800px;
+.app-container {
+    width: 90%;
+    max-width: 600px;
     margin: 20px auto;
+    background: white;
+    border-radius: 10px;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.card {
-    padding: 20px;
+h1 {
+    margin-bottom: 20px;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+#barcode-scanner {
+    margin: 20px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
+    padding: 10px;
 }
 
-.hidden {
-    display: none;
-}
-
-h2, h3 {
-    margin-top: 0;
-}
-
-label {
+form label {
     display: block;
-    margin: 10px 0 5px;
+    margin: 10px 0;
 }
 
 input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    width: 90%;
+    padding: 5px;
+    margin-top: 5px;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
+    background: #28a745;
+    color: white;
     border: none;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-}
-
-button.primary {
-    background-color: #28a745;
 }
 
 button:hover {
-    opacity: 0.9;
+    background: #218838;
 }
 
-.error {
-    color: red;
-    font-size: 14px;
+#bill, #bill-history {
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#bill-history {
+    max-height: 200px;
+    overflow-y: auto;
 }
