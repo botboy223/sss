@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="login-section" class="card">
+            <h2>Login</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter Username" />
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter Password" />
+            <button onclick="login()">Login</button>
+            <p id="login-error" class="error"></p>
+        </div>
+
+        <div id="scanner-section" class="hidden">
+            <h2>Product Scanner</h2>
+            <div id="my-qr-reader"></div>
+            <div id="cart-section">
+                <h3>Cart</h3>
+                <div id="product-list"></div>
+                <button class="primary" onclick="generateBill()">Generate Bill</button>
+            </div>
+        </div>
+
+        <div id="bill-section" class="hidden"></div>
+
+        <div id="history-section" class="hidden"></div>
+
+        <button id="view-history" class="hidden" onclick="viewHistory()">View Bill History</button>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
