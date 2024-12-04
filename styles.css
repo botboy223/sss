@@ -1,70 +1,131 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: center;
+let products = [];
+let billHistory = [];
+
+function startScanning() {
+    const scanner = new Html5QrcodeScanner("barcode-scanner", { fps: 10, qrbox: 250 });
+    scanner.render((decodedText) => {
+        document.getElementById("barcode").value = decodedText;
+        scanner.clear();
+    });
 }
 
-.app-container {
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+function addProduct() {
+    const barcode = document.getElementById("barcode").value;
+    const productName = document.getElementById("product-name").value;
+    const price = parseFloat(document.getElementById("price").value);
+    const expiryDate = document.getElementById("expiry-date").value;
+
+    if (!barcode || !productName || !price || !expiryDate) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    products.push({ barcode, productName, price, expiryDate });
+    localStorage.setItem("products", JSON.stringify(products));
+
+    alert("Product added!");
+    document.getElementById("product-form").reset();
 }
 
-h1 {
-    margin-bottom: 20px;
+function generateBill() {
+    if (products.length === 0) {
+        alert("No products added.");
+        return;
+    }
+
+    const bill = {
+        products: [...products],
+        total: products.reduce((sum, item) => sum + item.price, 0),
+        date: new Date().toLocaleString(),
+    };
+
+    billHistory.push(bill);
+    localStorage.setItem("billHistory", JSON.stringify(billHistory));
+
+    renderBill(bill);
+    renderBillHistory();
+
+    products = [];
+    localStorage.setItem("products", JSON.stringify(products));
 }
 
-.section {
-    margin-bottom: 20px;
+function renderBill(bill) {
+    const billContainer = document.getElementById("bill");
+    billContainer.innerHTML = `
+        <h3>Bill (${bill.date})</h3>
+        <ul>
+            ${bill.products
+                .map(
+                    (item) =>
+                        `<li>${item.productName} - $${item.price.toFixed(
+                            2
+                        )} (Expiry: ${item.expiryDate})</li>`
+                )
+                .join("")}
+        </ul>
+        <strong>Total: $${bill.total.toFixed(2)}</strong>
+    `;
 }
 
-#barcode-scanner {
-    margin: 20px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
+function printBill() {
+    const billContainer = document.getElementById("bill");
+    if (!billContainer.innerHTML.trim()) {
+        alert("No bill to print. Please generate a bill first.");
+        return;
+    }
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Bill</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                }
+                h3 {
+                    margin-bottom: 10px;
+                }
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                }
+                ul li {
+                    margin: 5px 0;
+                }
+                strong {
+                    font-size: 1.2em;
+                }
+            </style>
+        </head>
+        <body>
+            ${billContainer.innerHTML}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
 }
 
-form label {
-    display: block;
-    margin: 10px 0;
+function renderBillHistory() {
+    const historyContainer = document.getElementById("bill-history");
+    const history = JSON.parse(localStorage.getItem("billHistory")) || [];
+    historyContainer.innerHTML = history
+        .map(
+            (bill) => `
+        <div>
+            <h4>Bill (${bill.date})</h4>
+            <p>Total: $${bill.total.toFixed(2)}</p>
+        </div>
+    `
+        )
+        .join("");
 }
 
-input {
-    width: 90%;
-    padding: 5px;
-    margin-top: 5px;
-}
-
-button {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #218838;
-}
-
-#bill, #bill-history {
-    background: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-#bill-history {
-    max-height: 200px;
-    overflow-y: auto;
-}
+// Load existing data on page load
+document.addEventListener("DOMContentLoaded", () => {
+    products = JSON.parse(localStorage.getItem("products")) || [];
+    billHistory = JSON.parse(localStorage.getItem("billHistory")) || [];
+    renderBillHistory();
+});
