@@ -3,39 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS System</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Barcode Scanner Shop</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div id="login-section" class="card">
-            <h2>Login</h2>
-            <label for="username">Username:</label>
-            <input type="text" id="username" placeholder="Enter Username" />
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter Password" />
-            <button onclick="login()">Login</button>
-            <p id="login-error" class="error"></p>
-        </div>
-
-        <div id="scanner-section" class="hidden">
-            <h2>Product Scanner</h2>
-            <div id="my-qr-reader"></div>
-            <div id="cart-section">
-                <h3>Cart</h3>
-                <div id="product-list"></div>
-                <button class="primary" onclick="generateBill()">Generate Bill</button>
+    <div class="app-container">
+        <h1>Shop Barcode Scanner</h1>
+        <div class="section">
+            <div id="barcode-scanner"></div>
+            <button onclick="startScanning()">Start Scanning</button>
+            <div id="product-details">
+                <h2>Product Details</h2>
+                <form id="product-form">
+                    <label>Barcode: <input type="text" id="barcode" readonly></label><br>
+                    <label>Product Name: <input type="text" id="product-name"></label><br>
+                    <label>Price: <input type="number" id="price"></label><br>
+                    <label>Expiry Date: <input type="date" id="expiry-date"></label><br>
+                    <button type="button" onclick="addProduct()">Add Product</button>
+                </form>
+            </div>
+            <div id="bill-section">
+                <h2>Bill</h2>
+                <div id="bill"></div>
+                <button onclick="generateBill()">Generate Bill</button>
+            </div>
+            <div id="bill-history-section">
+                <h2>Bill History</h2>
+                <div id="bill-history"></div>
             </div>
         </div>
-
-        <div id="bill-section" class="hidden"></div>
-
-        <div id="history-section" class="hidden"></div>
-
-        <button id="view-history" class="hidden" onclick="viewHistory()">View Bill History</button>
     </div>
-
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="script.js"></script>
 </body>
 </html>
