@@ -51,14 +51,19 @@ domReady(function () {
         if (productDetails[decodeText]) {
             const existingItem = cart.find(item => item.code === decodeText);
             if (!existingItem) {
-                if (inventory[decodeText].quantity > 0) {
+                if (inventory[decodeText].quantity > 0) { // Check if there's stock
                     cart.push({ code: decodeText, quantity: 1 }); // Start with a quantity of 1
                     displayCart();
                 } else {
                     alert(`Out of stock for product ${inventory[decodeText].name}!`);
                 }
             } else {
-                displayCart(); // If the item exists, just show the cart, allowing manual quantity adjustment
+                if (inventory[decodeText].quantity >= existingItem.quantity + 1) { // Check if adding more won't exceed stock
+                    existingItem.quantity++;
+                    displayCart();
+                } else {
+                    alert(`Cannot add more. Only ${inventory[decodeText].quantity} left in stock for ${inventory[decodeText].name}.`);
+                }
             }
         } else {
             alert(`Product ${decodeText} not found!`);
@@ -105,18 +110,21 @@ domReady(function () {
             const oldQty = cart[index].quantity;
             
             if (!isNaN(newQty) && newQty > 0) {
+                // Check if there's enough stock before changing quantity
                 if (inventory[productCode].quantity >= newQty) {
                     cart[index].quantity = newQty;
                     displayCart();
                 } else {
                     alert(`Not enough stock. Only ${inventory[productCode].quantity} left.`);
-                    e.target.value = oldQty;
+                    e.target.value = oldQty; // Reset to previous value
                 }
             } else if (e.target.value === '') {
-                e.target.value = '';
+                // Allow the field to be empty temporarily for editing
+                e.target.value = ''; // Keep it empty so user can type a new number
             } else {
+                // If input is not a positive number or empty, reset to old quantity
                 alert('Quantity must be a positive number.');
-                e.target.value = oldQty;
+                e.target.value = oldQty; // Reset to previous value
             }
         }
     });
@@ -363,7 +371,7 @@ domReady(function () {
             input.addEventListener('change', function() {
                 const barcode = this.getAttribute('data-barcode');
                 const newQuantity = parseInt(this.value);
-                if (newQuantity >= 0) {
+                if (newQuantity >= 0) { // Ensure quantity isn't negative
                     inventory[barcode].quantity = newQuantity;
                     document.getElementById('save-inventory').style.display = 'block'; // Show save button
                 } else {
@@ -402,8 +410,7 @@ domReady(function () {
         let totalSales = 0;
 
         billHistory.forEach(bill => {
-            const billDate = new Date(bill.date).toDateString();
-            if (billDate === today) {
+            if (new Date(bill.date).toDateString() === today) {
                 todaySales += parseFloat(bill.total);
             }
             totalSales += parseFloat(bill.total);
@@ -423,6 +430,7 @@ domReady(function () {
 
     // Show/Hide Options
     function showMoreOptions() {
+        console.log("More button clicked!");
         document.getElementById('moreOptions').classList.toggle('hidden');
         updateDashboard();
     }
