@@ -9,22 +9,12 @@ function domReady(fn) {
 window.jsPDF = window.jspdf.jsPDF;
 
 function saveToLocalStorage(key, value) {
-    try {
-        localStorage.setItem(key, JSON.stringify(value));
-    } catch (e) {
-        console.error('Failed to save to localStorage:', e);
-        alert('Failed to save data. Please check your storage settings.');
-    }
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
 function loadFromLocalStorage(key) {
-    try {
-        const value = localStorage.getItem(key);
-        return value ? JSON.parse(value) : null;
-    } catch (e) {
-        console.error('Failed to load from localStorage:', e);
-        return null;
-    }
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
 }
 
 domReady(function () {
@@ -50,9 +40,6 @@ domReady(function () {
             document.getElementById('product-price').value = '';
             document.getElementById('product-quantity').value = '';
         }
-    }, (error) => {
-        console.error('QR Code Scanner Error:', error);
-        alert('Failed to start QR code scanner for product setup.');
     });
 
     // Scanner for Option 2 (Cart)
@@ -81,9 +68,6 @@ domReady(function () {
         } else {
             alert(`Product ${decodeText} not found!`);
         }
-    }, (error) => {
-        console.error('QR Code Scanner Error:', error);
-        alert('Failed to start QR code scanner for adding to cart.');
     });
 
     // Cart Display
@@ -121,11 +105,12 @@ domReady(function () {
     document.getElementById('cart').addEventListener('input', (e) => {
         if (e.target.classList.contains('quantity-input')) {
             const index = e.target.dataset.index;
-            const newQty = e.target.value === '' ? 1 : parseInt(e.target.value); // Default to 1 if empty
+            const newQty = parseInt(e.target.value);
             const productCode = cart[index].code;
             const oldQty = cart[index].quantity;
             
             if (!isNaN(newQty) && newQty > 0) {
+                // Check if there's enough stock before changing quantity
                 if (inventory[productCode].quantity >= newQty) {
                     cart[index].quantity = newQty;
                     displayCart();
@@ -133,7 +118,11 @@ domReady(function () {
                     alert(`Not enough stock. Only ${inventory[productCode].quantity} left.`);
                     e.target.value = oldQty; // Reset to previous value
                 }
+            } else if (e.target.value === '') {
+                // Allow the field to be empty temporarily for editing
+                e.target.value = ''; // Keep it empty so user can type a new number
             } else {
+                // If input is not a positive number or empty, reset to old quantity
                 alert('Quantity must be a positive number.');
                 e.target.value = oldQty; // Reset to previous value
             }
@@ -271,7 +260,6 @@ domReady(function () {
         } catch (error) {
             alert(`Error: ${error.message}`);
             console.error(error);
-            // Do not clear cart if there's an error
         }
     });
 
