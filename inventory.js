@@ -52,7 +52,7 @@ domReady(function () {
             const existingItem = cart.find(item => item.code === decodeText);
             if (!existingItem) {
                 if (inventory[decodeText].quantity > 0) { // Check if there's stock
-                    cart.push({ code: decodeText, quantity: 1 }); // Start with a quantity of 1
+                    cart.push({ code: decodeText, quantity: 1 });
                     displayCart();
                 } else {
                     alert(`Out of stock for product ${inventory[decodeText].name}!`);
@@ -118,11 +118,7 @@ domReady(function () {
                     alert(`Not enough stock. Only ${inventory[productCode].quantity} left.`);
                     e.target.value = oldQty; // Reset to previous value
                 }
-            } else if (e.target.value === '') {
-                // Allow the field to be empty temporarily for editing
-                e.target.value = ''; // Keep it empty so user can type a new number
             } else {
-                // If input is not a positive number or empty, reset to old quantity
                 alert('Quantity must be a positive number.');
                 e.target.value = oldQty; // Reset to previous value
             }
