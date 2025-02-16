@@ -12,6 +12,12 @@
         <div class="button-group">
             <button id="moreButton">More</button>
         </div>
+        <div id="dashboard" class="dashboard">
+            <h3>Dashboard</h3>
+            <p>Total Sales: Rs. <span id="total-sales">0.00</span></p>
+            <p>Low Stock Items:</p>
+            <ul id="low-stock-items"></ul>
+        </div>
 
         <div id="moreOptions" class="hidden">
             <button id="option1-button">Set Barcode Values</button>
@@ -22,15 +28,7 @@
             <button id="inventory-button">Inventory</button>
         </div>
 
-        <div id="dashboard" class="dashboard hidden">
-            <h3>Dashboard</h3>
-            
-            <p>Total Sales: Rs. <span id="total-sales">0.00</span></p>
-            <p>Low Stock Items:</p>
-            <ul id="low-stock-items"></ul>
-        </div>
-
-        <div id="option1" class="option hidden">
+        <div id="option1" class="option">
             <div id="my-qr-reader-option1"></div>
             <div class="input-group">
                 <label for="barcode">Barcode:</label>
@@ -58,9 +56,10 @@
             <div id="total">Total: Rs.0</div>
             <button id="generate-bill">Generate Bill</button>
             <div id="bill-qr-code"></div>
+            <button id="restart-scan">Scan Again</button>
         </div>
 
-        <div id="option3" class="option hidden">
+        <div id="option3" class="option">
             <h2>UPI QR Code Generator</h2>
             <form id="qrForm">
                 <div class="input-group">
@@ -80,18 +79,18 @@
             <div id="qrCode"></div>
         </div>
 
-        <div id="option4" class="option hidden">
+        <div id="option4" class="option">
             <h2>Import/Export Data</h2>
             <button id="download-data">Download Data</button>
             <input type="file" id="upload-data" accept=".json">
         </div>
 
-        <div id="option5" class="option hidden">
+        <div id="option5" class="option">
             <h2>Bill History</h2>
             <div id="bill-history"></div>
         </div>
 
-        <div id="inventory-option" class="option hidden">
+        <div id="inventory-option" class="option">
             <h2>Inventory</h2>
             <div id="inventory-list"></div>
             <button id="save-inventory" style="display: none;">Save</button>
