@@ -53,6 +53,7 @@ domReady(function () {
             if (!existingItem) {
                 if (inventory[decodeText].quantity > 0) { // Check if there's stock
                     cart.push({ code: decodeText, quantity: 1 });
+                    updateInventory(decodeText, 1);
                     displayCart();
                 } else {
                     alert(`Out of stock for product ${inventory[decodeText].name}!`);
@@ -60,6 +61,7 @@ domReady(function () {
             } else {
                 if (inventory[decodeText].quantity >= existingItem.quantity + 1) { // Check if adding more won't exceed stock
                     existingItem.quantity++;
+                    updateInventory(decodeText, 1);
                     displayCart();
                 } else {
                     alert(`Cannot add more. Only ${inventory[decodeText].quantity} left in stock for ${inventory[decodeText].name}.`);
@@ -107,20 +109,12 @@ domReady(function () {
             const index = e.target.dataset.index;
             const newQty = parseInt(e.target.value);
             const productCode = cart[index].code;
-            const oldQty = cart[index].quantity;
-            
-            if (!isNaN(newQty) && newQty > 0) {
-                // Check if there's enough stock before changing quantity
-                if (inventory[productCode].quantity >= newQty) {
-                    cart[index].quantity = newQty;
-                    displayCart();
-                } else {
-                    alert(`Not enough stock. Only ${inventory[productCode].quantity} left.`);
-                    e.target.value = oldQty; // Reset to previous value
-                }
+            if (!isNaN(newQty) && newQty > 0 && newQty <= inventory[productCode].quantity) {
+                cart[index].quantity = newQty;
+                displayCart();
             } else {
-                alert('Quantity must be a positive number.');
-                e.target.value = oldQty; // Reset to previous value
+                alert(`Quantity must be between 1 and available stock (${inventory[productCode].quantity}).`);
+                e.target.value = cart[index].quantity; // Reset to previous value
             }
         }
     });
@@ -239,19 +233,15 @@ domReady(function () {
             });
             saveToLocalStorage('billHistory', billHistory);
 
-            // Update inventory and save changes after bill generation
-            cart.forEach(item => {
-                updateInventory(item.code, item.quantity);
-            });
-            
-            // Clear cart
-            cart = [];
-            displayCart();
-            updateDashboard();
-
             // Open PDF
             const pdfBlob = doc.output('blob');
             window.open(URL.createObjectURL(pdfBlob), '_blank');
+
+            // Clear cart and update inventory
+            cart.forEach(item => updateInventory(item.code, item.quantity));
+            cart = [];
+            displayCart();
+            updateDashboard();
 
         } catch (error) {
             alert(`Error: ${error.message}`);
@@ -340,10 +330,7 @@ domReady(function () {
     // Inventory Management
     function updateInventory(barcode, quantityChange) {
         if (inventory[barcode]) {
-            inventory[barcode].quantity -= quantityChange;
-            if (inventory[barcode].quantity < 0) {
-                inventory[barcode].quantity = 0; // Ensure no negative stock
-            }
+            inventory[barcode].quantity = Math.max(0, inventory[barcode].quantity - quantityChange);
             saveToLocalStorage('inventory', inventory);
         }
     }
